@@ -4,7 +4,7 @@ configuration file for pythongrid+
 # Written (W) 2008-2013 Christian Widmer
 # Written (W) 2014 Vipin T. Sreedharan
 #
-# Copyright (C) 2008-2014 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tübingen
+# Copyright (C) 2008-2014 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tubingen
 """
 
 import os

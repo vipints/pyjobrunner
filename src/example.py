@@ -1,17 +1,15 @@
 #!/usr/bin/env python
+"""
+example script to test the functionality of cluster computing 
 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
 # Written (W) 2008-2013 Christian Widmer
 # Written (W) 2014 Vipin T. Sreedharan
-# Copyright (C) 2008-2013 Max-Planck-Society
 
-from libpyjobrunner import cBioJob, process_jobs
+# Copyright (C) 2008-2014 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tubingen
+"""
 
 import time
+from libpyjobrunner import cBioJob, process_jobs
 
 def compute_factorial(n):
     """
@@ -48,10 +46,10 @@ def make_jobs():
         job = cBioJob(compute_factorial, arg) 
         job.mem="2gb"
         job.nodes = 1
+        job.ppn = 1
         job.walltime = "00:10:00"
         
         jobs.append(job)
-        
 
     return jobs
 
@@ -84,7 +82,6 @@ def run_example_local_multithreading():
     print "ret fields AFTER execution on local machine"
     for (i, job) in enumerate(processedFunctionJobs):
         print "Job #", i, "- ret: ", str(job.ret)[0:10]
- 
 
 
 def run_example_cluster():
@@ -115,7 +112,6 @@ def run_example_cluster():
     print "ret fields AFTER execution on cluster"
     for (i, job) in enumerate(processedFunctionJobs):
         print "Job #", i, "- ret: ", str(job.ret)[0:10]
-
 
 
 def main(argv=None):
