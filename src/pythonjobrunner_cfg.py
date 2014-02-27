@@ -1,5 +1,10 @@
 """
 configuration file for pythongrid+
+
+# Written (W) 2008-2013 Christian Widmer
+# Written (W) 2014 Vipin T. Sreedharan
+#
+# Copyright (C) 2008-2014 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tübingen
 """
 
 import os
@@ -43,7 +48,7 @@ path = os.path.abspath(__file__)
 dir_path = os.path.dirname(path)
 
 # default python path
-#CFG['PYTHONPATH'] = ":".join(sys.path)
+CFG['PYTHONPATH'] = ":".join(sys.path)
 
 CFG['PYGRID']     = dir_path + "/libpyjobrunner.py"
 CFG['TEMPDIR']    = os.environ['HOME'] + "/tmp/"
@@ -84,7 +89,7 @@ CFG['CHECK_FREQUENCY'] = 15
 # heartbeat frequency: how many seconds pass before jobs
 # on the cluster send back heart beats to the submission 
 # host
-CFG['HEARTBEAT_FREQUENCY'] = 10
+CFG['HEARTBEAT_FREQUENCY'] = 20
 
 # white-list of nodes to use
 CFG['WHITELIST'] = get_white_list()
