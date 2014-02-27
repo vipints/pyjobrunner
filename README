@@ -1,0 +1,13 @@
+pythongrid+
+===========
+An extension of pythongrid program
+
+    - submit jobs to TORQUE based cluster and monitor job status 
+
+
+Authors
+=======
+Christain Widmer 
+Vipin T Sreedharan
+
+TODO: more details about the program
