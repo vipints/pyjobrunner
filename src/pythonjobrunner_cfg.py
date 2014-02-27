@@ -1,4 +1,7 @@
-"""configuration file for pythongrid"""
+"""
+configuration file for pythongrid+
+"""
+
 import os
 import sys
 
@@ -10,22 +13,23 @@ def get_white_list():
     try:
         qstat = os.popen("qstat -f")
 
-        node_names = []
+        node_names = dict()
 
         for line in qstat:
 
-            if "@" in line:
-                tokens = line.strip().split()
-                node_name = tokens[0]
+            line = line.strip( '\n\r' )
+            #     exec_host = gpu-2-6/0+gpu-2-6/1 ## job runnning on 1 node 2 processors 
+            if "exec_host" in line:
 
-                if len(tokens) == 6:
-                    continue
+                tokens = line.split( ' = ' )
+                node_name = tokens[-1].split( '/' ) 
+                node_name = node_name[0]
 
-                node_names.append(node_name)
+                node_names[node_name] = 1 
 
         qstat.close()
 
-        return node_names
+        return node_names.keys()
 
     except Exception, details:
         print "getting whitelist failed", details
@@ -59,7 +63,6 @@ CFG['CREATE_PLOTS'] = False
 # enable web-interface to monitor jobs
 CFG['USE_CHERRYPY'] = False 
 
-
 # under the hood
 
 # how much time can pass between heartbeats, before
@@ -92,7 +95,6 @@ CFG['BLACKLIST'] = []
 # remove black-list from white-list
 for node in CFG['BLACKLIST']:
     CFG['WHITELIST'].remove(node)
-
 
 if __name__ == '__main__':
 
