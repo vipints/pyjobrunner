@@ -9,7 +9,7 @@
 # Written (W) 2008-2010 Cheng Soon Ong
 # Written (W) 2014 Vipin T. Sreedharan
 #
-# Copyright (C) 2008-2013 Max-Planck-Society / MSKCC / TU-Berlin
+# Copyright (C) 2008-2014 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tubingen
 
 """
 pythongrid+ provides a high level front-end to DRMAA-python.
@@ -22,28 +22,28 @@ of submitted jobs and take appropriate action in case of failure.
 
 The DRMAA runner can also be used (instead of the PBS runner) to submit jobs to TORQUE.
 DRM's DRMAA library is compiled using the pbs-drmaa [http://apps.man.poznan.pl/trac/pbs-drmaa/wiki]
+working with Torque and Moab
 """
 
 import re
 import sys
 import os
+import gzip
+import time
+import getopt
+import random
 import os.path
 import inspect
-import gzip
 import cPickle
-import getopt
-import time
-import random
 import traceback
 import zmq
-import socket
 import zlib
 import uuid   
+import socket
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-
 
 from datetime import datetime
 
@@ -56,7 +56,6 @@ DRMAA_PRESENT = False
 MULTIPROCESSING_PRESENT = False
 MATPLOTLIB_PRESENT = False
 CHERRYPY_PRESENT = False
-
 
 try:
     import drmaa
@@ -90,7 +89,6 @@ if CFG["USE_CHERRYPY"]:
         print "Error importing cherrypy. Web-based monitoring will be disabled."
         print "Please check your installation."
         print detail
-
 
 
 class Job(object):
@@ -165,7 +163,6 @@ class Job(object):
             self.f = mod.__getattribute__(f.__name__)
 
 
-
     def __set_parameters(self, param):
         """
         method to set parameters from dict
@@ -213,24 +210,15 @@ class cBioJob(Job):
 
     def __init__(self, f, args, kwlist={}, param=None, cleanup=True):
         """
-        constructor of KybJob
+        constructor of cBioJob
         """
         Job.__init__(self, f, args, kwlist, param=param, cleanup=cleanup)
         self.arch = ""
-        self.tmpfree = ""
-        self.h_cpu = ""
-        self.h_rt = ""
-        self.express = ""
-        self.matlab = ""
-        self.simulink = ""
-        self.compiler = ""
-        self.imagetb = ""
-        self.opttb = ""
-        self.stattb = ""
-        self.sigtb = ""
-        self.cplex = ""
-        self.nicetohave = ""
+        self.cput = ""
+        self.software = ""
+        self.nice = ""
         self.mem = ""
+        self.vmem = ""
         self.nodes = ""
         self.ppn = ""
         self.walltime = ""
@@ -266,48 +254,32 @@ class cBioJob(Job):
         if (self.mem != ""):
             mem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.mem)
             ret = ret + " -l " + "mem" + "=" + str(self.mem)
+        if (self.vmem != ""):
+            vmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.vmem)
+            ret = ret + " -l " + "vmem" + "=" + str(self.vmem)
         if (self.nodes != "" ):
             ret = ret + " -l " + "nodes" + "=" + str(self.nodes)
         if (self.ppn != "" ):
             ret = ret + ":ppn" + "=" + str(self.ppn)
         if (self.walltime != "" ):
             ret = ret + " -l " + "walltime" + "=" + str(self.walltime)
-        """
         if (self.arch != ""):
             ret = ret + " -l " + "arch" + "=" + str(self.arch)
-        if (self.tmpfree != ""):
-            ret = ret + " -l " + "tmpfree" + "=" + str(self.tmpfree)
-        if (self.h_cpu != ""):
-            ret = ret + " -l " + "h_cpu" + "=" + str(self.h_cpu)
-        if (self.h_rt != ""):
-            ret = ret + " -l " + "h_rt" + "=" + str(self.h_rt)
-        if (self.express != ""):
-            ret = ret + " -l " + "express" + "=" + str(self.express)
-        if (self.matlab != ""):
-            ret = ret + " -l " + "matlab" + "=" + str(self.matlab)
-        if (self.simulink != ""):
-            ret = ret + " -l " + "simulink" + "=" + str(self.simulink)
-        if (self.compiler != ""):
-            ret = ret + " -l " + "compiler" + "=" + str(self.compiler)
-        if (self.imagetb != ""):
-            ret = ret + " -l " + "imagetb" + "=" + str(self.imagetb)
-        if (self.opttb != ""):
-            ret = ret + " -l " + "opttb" + "=" + str(self.opttb)
-        if (self.stattb != ""):
-            ret = ret + " -l " + "stattb" + "=" + str(self.stattb)
-        if (self.sigtb != ""):
-            ret = ret + " -l " + "sigtb" + "=" + str(self.sigtb)
-        if (self.cplex != ""):
-            ret = ret + " -l " + "cplex" + "=" + str(self.cplex)
-        if (self.nicetohave != ""):
-            ret = ret + " -l " + "nicetohave" + "=" + str(self.nicetohave)
+        if (self.cput != ""):
+            ret = ret + " -l " + "cput" + "=" + str(self.cput)
+        if (self.software != ""):
+            ret = ret + " -l " + "software" + "=" + str(self.software)
+        if (self.nice != ""):
+            ret = ret + " -l " + "nice" + "=" + str(self.nice)
 
+        """
         if (self.white_list != ""):
             ret = ret + " -q "
             for i in range(len(self.white_list)-1):
                 ret = ret + self.white_list[i] + ","
             ret = ret + self.white_list[-1]
         """
+
         return ret
 
 
@@ -1148,9 +1120,9 @@ def send_error_mail(job):
 
     # create message
     msg = MIMEMultipart()
-    msg["subject"] = "PYTHONGRID error " + str(job.name)
-    msg["From"] = "pythongrid"
-    msg["To"] = "pythongrid user"
+    msg["subject"] = "PYTHONGRID+ error " + str(job.name)
+    msg["From"] = "pythongrid+"
+    msg["To"] = "pythongrid+ user"
     
     
     # compose error message

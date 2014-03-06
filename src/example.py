@@ -11,6 +11,7 @@ example script to test the functionality of cluster computing
 import time
 from libpyjobrunner import cBioJob, process_jobs
 
+
 def compute_factorial(n):
     """
     computes factorial of n
@@ -23,6 +24,7 @@ def compute_factorial(n):
         ret=ret*(i+1)
 
     return ret
+
 
 def make_jobs():
     """
@@ -128,4 +130,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
-
