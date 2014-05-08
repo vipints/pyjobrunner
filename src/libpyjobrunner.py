@@ -1011,7 +1011,7 @@ def resubmit(session_id, job):
         session.control(job.jobid, drmaa.JobControlAction.TERMINATE)
         print "zombie job killed"
     except Exception, detail:
-        print "could not kill job with SGE id", job.jobid
+        print "could not kill job with PBS id", job.jobid
         print detail
     
     # create new job
@@ -1036,7 +1036,11 @@ def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5G"):
     # construct jobs
     for args in args_list:
         job = cBioJob(f, [args], param=param)
+
         job.mem = mem
+        job.walltime = param['walltime']
+        job.nodes = param['nodes']
+        job.ppn = param['ppn']
 
         jobs.append(job)
         
@@ -1116,7 +1120,6 @@ def send_error_mail(job):
     """
     send out diagnostic email
     """
-    
 
     # create message
     msg = MIMEMultipart()
