@@ -219,6 +219,7 @@ class cBioJob(Job):
         self.nice = ""
         self.mem = ""
         self.vmem = ""
+        self.pmem = ""
         self.nodes = ""
         self.ppn = ""
         self.walltime = ""
@@ -257,6 +258,9 @@ class cBioJob(Job):
         if (self.vmem != ""):
             vmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.vmem)
             ret = ret + " -l " + "vmem" + "=" + str(self.vmem)
+        if (self.pmem != ""):
+            vmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.pmem)
+            ret = ret + " -l " + "pmem" + "=" + str(self.pmem)
         if (self.nodes != "" ):
             ret = ret + " -l " + "nodes" + "=" + str(self.nodes)
         if (self.ppn != "" ):
@@ -894,6 +898,7 @@ class StatusCheckerZMQ(object):
                             job.cause_of_death = "out_of_memory"
     
                         else:
+                            pass 
                             #TODO: check if node is reachable
                             #TODO: check if network hangs, wait some more if so
                             print "job died for unknown reason"
@@ -1038,6 +1043,8 @@ def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5G"):
         job = cBioJob(f, [args], param=param)
 
         job.mem = mem
+        job.vmem = mem
+        job.pmem = mem
         job.walltime = param['walltime']
         job.nodes = param['nodes']
         job.ppn = param['ppn']
