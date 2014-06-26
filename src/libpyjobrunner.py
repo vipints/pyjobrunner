@@ -232,6 +232,9 @@ class cBioJob(Job):
         self.timestamp = None
         self.heart_beat = None
         self.exception = None
+
+        # overwrite the default settings about resubmission 
+        self.jobflags = "restartable"
         
         # fields to track mem/cpu-usage
         self.track_mem = []
@@ -275,6 +278,8 @@ class cBioJob(Job):
             ret = ret + " -l " + "software" + "=" + str(self.software)
         if (self.nice != ""):
             ret = ret + " -l " + "nice" + "=" + str(self.nice)
+        if (self.jobflags != ""):
+            ret = ret + " -l " + "jobflags" + "=" + str(self.jobflags)
 
         """
         if (self.white_list != ""):
