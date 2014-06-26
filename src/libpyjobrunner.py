@@ -234,7 +234,7 @@ class cBioJob(Job):
         self.exception = None
 
         # overwrite the default settings about resubmission 
-        self.jobflags = "restartable"
+        self.jobflags = None
         
         # fields to track mem/cpu-usage
         self.track_mem = []
@@ -1053,6 +1053,7 @@ def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5G"):
         job.walltime = param['walltime']
         job.nodes = param['nodes']
         job.ppn = param['ppn']
+        job.jobflags = param['jobflags']
 
         jobs.append(job)
         
