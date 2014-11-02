@@ -220,6 +220,7 @@ class cBioJob(Job):
         self.mem = ""
         self.vmem = ""
         self.pmem = ""
+        self.pvmem = ""
         self.nodes = ""
         self.ppn = ""
         self.walltime = ""
@@ -234,7 +235,7 @@ class cBioJob(Job):
         self.exception = None
 
         # overwrite the default settings about resubmission 
-        self.jobflags = None
+        #self.jobflags = None
         
         # fields to track mem/cpu-usage
         self.track_mem = []
@@ -262,8 +263,11 @@ class cBioJob(Job):
             vmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.vmem)
             ret = ret + " -l " + "vmem" + "=" + str(self.vmem)
         if (self.pmem != ""):
-            vmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.pmem)
+            pmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.pmem)
             ret = ret + " -l " + "pmem" + "=" + str(self.pmem)
+        if (self.pvmem != ""):
+            pvmem = re.sub("(\d+)\.?\d*(\w)", "\g<1>\g<2>", self.pvmem)
+            ret = ret + " -l " + "pvmem" + "=" + str(self.pvmem)
         if (self.nodes != "" ):
             ret = ret + " -l " + "nodes" + "=" + str(self.nodes)
         if (self.ppn != "" ):
@@ -278,8 +282,8 @@ class cBioJob(Job):
             ret = ret + " -l " + "software" + "=" + str(self.software)
         if (self.nice != ""):
             ret = ret + " -l " + "nice" + "=" + str(self.nice)
-        if (self.jobflags != ""):
-            ret = ret + " -l " + "jobflags" + "=" + str(self.jobflags)
+        #if (self.jobflags != ""):
+        #    ret = ret + " -l " + "jobflags" + "=" + str(self.jobflags)
 
         """
         if (self.white_list != ""):
@@ -1053,7 +1057,7 @@ def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5G"):
         job.walltime = param['walltime']
         job.nodes = param['nodes']
         job.ppn = param['ppn']
-        job.jobflags = param['jobflags']
+        #job.jobflags = param['jobflags']
 
         jobs.append(job)
         
