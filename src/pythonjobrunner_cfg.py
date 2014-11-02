@@ -57,7 +57,7 @@ CFG['TEMPDIR']    = os.environ['HOME'] + "/tmp/"
 CFG['SEND_ERROR_MAILS'] = False
 CFG['SMTPSERVER'] = "mailhost.myplace.org"
 CFG['ERROR_MAIL_SENDER'] = "error@myplace.org"
-CFG['ERROR_MAIL_RECIPIENT'] = "recepient@myplace.org"
+CFG['ERROR_MAIL_RECIPIENT'] = "vipin@cbio.mskcc.org"
 CFG['MAX_MSG_LENGTH'] = 5000
 
 # additional features
