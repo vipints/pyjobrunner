@@ -28,7 +28,7 @@ def compute_factorial(n):
 
 def make_jobs():
     """
-    creates a list of KybJob objects,
+    creates a list of cBioJob objects,
     which carry all information needed
     for a function to be executed on SGE:
     - function object
