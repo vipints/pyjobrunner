@@ -205,7 +205,7 @@ class Job(object):
 class cBioJob(Job):
     """
     Specialization of generic Job that provides an interface to
-    the system at cBio MSKCC New York City. 
+    the compute system at cBio MSKCC New York City. 
     """
 
     def __init__(self, f, args, kwlist={}, param=None, cleanup=True):
@@ -443,6 +443,8 @@ def submit_jobs(jobs, home_address, white_list=""):
     jobids = []
 
     for job in jobs:
+        #print job.name, job.mem, job.walltime 
+
         # set job white list
         job.white_list = white_list
 
@@ -457,7 +459,6 @@ def submit_jobs(jobs, home_address, white_list=""):
     session.exit()
 
     return (sid, jobids)
-
 
 
 def append_job_to_session(session, job):
@@ -489,7 +490,6 @@ def append_job_to_session(session, job):
     else:
         # only consider env vars from shell
         jt.jobEnvironment = shell_env
-        
 
     jt.remoteCommand = os.path.expanduser(CFG['PYGRID'])
     jt.args = [job.name, job.home_address]
@@ -497,6 +497,9 @@ def append_job_to_session(session, job):
     jt.nativeSpecification = job.nativeSpecification
     jt.outputPath = ":" + os.path.expanduser(CFG['TEMPDIR'])
     jt.errorPath = ":" + os.path.expanduser(CFG['TEMPDIR'])
+
+    #import pdb
+    #pdb.set_trace()
 
     jobid = session.runJob(jt)
 
@@ -1040,7 +1043,7 @@ def resubmit(session_id, job):
 
 
 
-def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5G"):
+def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5g"):
     """
     provides a generic map function
     """
@@ -1053,15 +1056,16 @@ def pg_map(f, args_list, param=None, local=False, maxNumThreads=1, mem="5G"):
 
         job.mem = mem
         job.vmem = mem
-        job.pmem = mem
+        job.pmem = param['pmem']
+        job.pvmem = param['pvmem']
         job.walltime = param['walltime']
         job.nodes = param['nodes']
         job.ppn = param['ppn']
         #job.jobflags = param['jobflags']
 
         jobs.append(job)
-        
 
+    
     # process jobs
     processed_jobs = process_jobs(jobs, local=local, maxNumThreads=maxNumThreads)
 
