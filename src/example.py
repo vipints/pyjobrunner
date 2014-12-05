@@ -46,7 +46,7 @@ def make_jobs():
     for arg in inputvec:
 
         job = cBioJob(compute_factorial, arg) 
-        job.mem="2gb"
+        job.mem="4gb"
         job.nodes = 1
         job.ppn = 1
         job.walltime = "00:10:00"
@@ -122,7 +122,7 @@ def main(argv=None):
     """
 
     # first we use local multithreading
-    run_example_local_multithreading()
+    #run_example_local_multithreading()
 
     # next we execute function on the cluster
     run_example_cluster()
