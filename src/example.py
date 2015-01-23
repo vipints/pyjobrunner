@@ -3,9 +3,9 @@
 example script to test the functionality of cluster computing 
 
 # Written (W) 2008-2013 Christian Widmer
-# Written (W) 2014 Vipin T. Sreedharan
+# Written (W) 2014-2015 Vipin T. Sreedharan
 
-# Copyright (C) 2008-2014 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tubingen
+# Copyright (C) 2008-2015 Max-Planck-Society / MSKCC / TU-Berlin/ University of Tubingen
 """
 
 import time
@@ -122,7 +122,7 @@ def main(argv=None):
     """
 
     # first we use local multithreading
-    #run_example_local_multithreading()
+    run_example_local_multithreading()
 
     # next we execute function on the cluster
     run_example_cluster()
