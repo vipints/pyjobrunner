@@ -78,6 +78,10 @@ CFG['MAX_TIME_BETWEEN_HEARTBEATS'] = 90
 # if an out of memory event was detected. 
 CFG['OUT_OF_MEM_INCREASE'] = 2.0
 
+# factor by which to increase the requested walltime
+# if an exceeded walltime limit was detected. 
+CFG['EXCEED_CPU_INCREASE'] = 2.0
+
 # defines how many times can a particular job can die, 
 # before we give up
 CFG['NUM_RESUBMITS'] = 3
