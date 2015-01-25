@@ -348,6 +348,15 @@ class cBioJob(Job):
 
         # other problem
         return False
+
+    
+    def is_job_cputime_exceeded(self):
+        """
+        check if the job is exceeded the walltime according to the resource requested
+        """
+    
+        exit_status = self.ret
+
         
 
     def alter_allocated_memory(self, factor=2.0):
@@ -366,6 +375,13 @@ class cBioJob(Job):
 
         return self
 
+
+    def alter_allocated_walltime(self, factor=2.0):
+        """
+        increase the walltime if the job error was due to cputime. exit_status = -11
+        """
+
+        assert(type(factor)==float)
 
 
 #only define this class if the multiprocessing module is present
@@ -667,7 +683,7 @@ class StatusChecker(object):
         self.jobid_to_status = {}.fromkeys(self.jobids, 0)
 
         self._decodestatus = {
-            -42: 'sge and drmaa not in sync',
+            -42: 'sge/torque/pbs and drmaa are not in sync',
             "undetermined": 'process status cannot be determined',
             "queued_active": 'job is queued and active',
             "system_on_hold": 'job is queued and in system hold',
@@ -908,6 +924,10 @@ class StatusCheckerZMQ(object):
                         if job.is_out_of_memory():
                             print "job was out of memory"
                             job.cause_of_death = "out_of_memory"
+                        
+                        elif job.is_job_cputime_exceeded():
+                            print "job exceeded its cputime limit"
+                            job.cause_of_death = "cpu_time_exceeded"
     
                         else:
                             pass 
@@ -989,10 +1009,14 @@ def handle_resubmit(session_id, job):
             # increase memory
             job.alter_allocated_memory(CFG["OUT_OF_MEM_INCREASE"])
 
+        elif job.cause_of_death == "cpu_time_exceeded":
+            job.alter_allocated_walltime(CFG["OUT_OF_CPUTIME_INCREASE"])
+
         else:
 
             # remove node from white_list
-            node_name = "all.q@" + job.host_name
+            #node_name = "all.q@" + job.host_name
+            node_name = job.host_name
             if job.white_list.count(node_name) > 0:
                 job.white_list.remove(node_name)
 
@@ -1022,7 +1046,7 @@ def resubmit(session_id, job):
     
     # try to kill off old job
     try:
-        # TODO: ask SGE more questions about job status etc (maybe re-integrate StatusChecker)
+        # TODO: ask sheduler more questions about job status etc (maybe re-integrate StatusChecker)
         # TODO: write unit test for this
 
         session.control(job.jobid, drmaa.JobControlAction.TERMINATE)
