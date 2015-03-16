@@ -285,13 +285,11 @@ class cBioJob(Job):
         #if (self.jobflags != ""):
         #    ret = ret + " -l " + "jobflags" + "=" + str(self.jobflags)
 
-        """
         if (self.white_list != ""):
-            ret = ret + " -q "
+            ret = ret + " -l " + "host" + "=" + str(self.host_name) 
             for i in range(len(self.white_list)-1):
                 ret = ret + self.white_list[i] + ","
             ret = ret + self.white_list[-1]
-        """
 
         return ret
 
