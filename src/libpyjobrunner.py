@@ -14,6 +14,9 @@
 """
 pythongrid+ provides a high level front-end to DRMAA-python.
 
+TODO 
+option to specify the job scheduler and switching the native specification according to that
+
 This module provides wrappers that simplify submission and collection of jobs,
 in a more 'pythonic' fashion.
 
@@ -212,6 +215,7 @@ class cBioJob(Job):
         """
         constructor of cBioJob
         """
+
         Job.__init__(self, f, args, kwlist, param=param, cleanup=cleanup)
         self.arch = ""
         self.cput = ""
@@ -286,11 +290,11 @@ class cBioJob(Job):
         #    ret = ret + " -l " + "jobflags" + "=" + str(self.jobflags)
         
        
-        if (self.white_list != ""):
-            ret = ret + " -l " + "host" + "=" + str(self.host_name) 
-            for i in range(len(self.white_list)-1):
-                ret = ret + self.white_list[i] + "+"
-            ret = ret + self.white_list[-1]
+        #if (self.white_list != ""):
+        #    ret = ret + " -l " + "host" + "=" + str(self.host_name) 
+        #    for i in range(len(self.white_list)-1):
+        #        ret = ret + self.white_list[i] + "+"
+        #    ret = ret + self.white_list[-1]
         
         return ret
 
@@ -513,8 +517,8 @@ def append_job_to_session(session, job):
     jt.outputPath = ":" + os.path.expanduser(CFG['TEMPDIR'])
     jt.errorPath = ":" + os.path.expanduser(CFG['TEMPDIR'])
 
-    #import pdb
-    #pdb.set_trace()
+    #import ipdb
+    #ipdb.set_trace()
 
     jobid = session.runJob(jt)
 
@@ -524,8 +528,8 @@ def append_job_to_session(session, job):
     job.log_stderr_fn = (os.path.expanduser(CFG['TEMPDIR']) + job.name + '.e' + jobid)
 
     print 'Your job %s has been submitted with id %s' % (job.name, jobid)
-    print "stdout:", job.log_stdout_fn
-    print "stderr:", job.log_stderr_fn
+    print "stdout, stderr:", job.log_stdout_fn
+    #print "stderr:", job.log_stderr_fn
     print ""
 
     session.deleteJobTemplate(jt)
@@ -603,10 +607,7 @@ def collect_jobs(sid, jobids, joblist, wait=False):
             
             print detail
 
-
-
     return retJobs
-
 
 
 def process_jobs(jobs, local=False, maxNumThreads=1):
@@ -1012,7 +1013,6 @@ def handle_resubmit(session_id, job):
             job.alter_allocated_walltime(CFG["OUT_OF_CPUTIME_INCREASE"])
 
         else:
-
             # remove node from white_list
             #node_name = "all.q@" + job.host_name
             node_name = job.host_name
