@@ -72,7 +72,7 @@ CFG['USE_CHERRYPY'] = False
 
 # how much time can pass between heartbeats, before
 # job is assummed to be dead in seconds
-CFG['MAX_TIME_BETWEEN_HEARTBEATS'] = 90
+CFG['MAX_TIME_BETWEEN_HEARTBEATS'] = 180
 
 # factor by which to increase the requested memory
 # if an out of memory event was detected. 
@@ -93,7 +93,7 @@ CFG['CHECK_FREQUENCY'] = 15
 # heartbeat frequency: how many seconds pass before jobs
 # on the cluster send back heart beats to the submission 
 # host
-CFG['HEARTBEAT_FREQUENCY'] = 20
+CFG['HEARTBEAT_FREQUENCY'] = 60
 
 # white-list of nodes to use
 CFG['WHITELIST'] = get_white_list()
@@ -103,7 +103,10 @@ CFG['BLACKLIST'] = []
 
 # remove black-list from white-list
 for node in CFG['BLACKLIST']:
-    CFG['WHITELIST'].remove(node)
+    try:
+        CFG['WHITELIST'].remove(node)
+    except:
+        pass 
 
 if __name__ == '__main__':
 
