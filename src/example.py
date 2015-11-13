@@ -46,7 +46,7 @@ def make_jobs():
     for arg in inputvec:
 
         job = cBioJob(compute_factorial, arg) 
-        job.mem="4gb"
+        job.mem="1gb"
         job.nodes = 1
         job.ppn = 1
         job.walltime = "00:10:00"
