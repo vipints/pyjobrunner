@@ -1,0 +1,13 @@
+
+
+nativespecifications definition class to be integrated with an option in config file. 
+
+    LSF - 
+    condor - 
+    Torque -
+    Slurm -
+    SGE - 
+
+Switching between different schedulers
+
+
