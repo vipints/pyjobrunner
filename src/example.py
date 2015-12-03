@@ -77,9 +77,9 @@ def run_example_local_multithreading():
         print "Job #", i, "- ret: ", job.ret
 
     print ""
-    print "executing jobs on local machine using 3 threads"
+    print "executing jobs on local machine using 1 thread"
 
-    processedFunctionJobs = process_jobs(functionJobs, local=True, maxNumThreads=3)
+    processedFunctionJobs = process_jobs(functionJobs, local=True, maxNumThreads=1)
 
     print "ret fields AFTER execution on local machine"
     for (i, job) in enumerate(processedFunctionJobs):
